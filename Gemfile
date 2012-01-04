@@ -1,3 +1,5 @@
 source :rubygems
 gem "sinatra"
 gem "twilio-ruby"
+gem "builder"
+gem "redis"
