@@ -13,7 +13,7 @@ before do
 end
 
 get '/responder' do
-  @code = REDIS.blpop 'code'
+  @code = REDIS.blpop('code', 0).last
 
   builder do |xml|
     xml.instruct!
