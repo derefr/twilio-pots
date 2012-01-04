@@ -2,6 +2,7 @@ require 'redis'
 require 'sinatra'
 require 'builder'
 require 'twilio-ruby'
+require 'rest-client'
 
 configure do
   redis_uri = URI.parse(ENV["REDISTOGO_URL"] || 'redis://localhost:6379/')
@@ -15,12 +16,12 @@ end
 get '/responder' do
   @code = REDIS.blpop('code', 0).last
 
+  RestClient.get("http://www.dialabc.com/sound/generate/index.html?pnum=#{@code}&auFormat=wavpcm8&toneLength=300&mtcontinue=Generate+DTMF+Tones")
+
   builder do |xml|
     xml.instruct!
     xml.Response do
-      xml.Dial do
-        xml.Number(:sendDigits => "wwww#{@code}")
-      end
+      xml.Play("http://www.dialabc.com/i/cache/dtmfgen/wavpcm8.300/#{@code}.wav")
     end
   end
 end
