@@ -19,7 +19,7 @@ get '/responder' do
     xml.instruct!
     xml.Response do
       xml.Dial do
-        xml.Number(:sendDigits => "wwww#{code}")
+        xml.Number(:sendDigits => "wwww#{@code}")
       end
     end
   end
