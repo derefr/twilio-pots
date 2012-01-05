@@ -48,7 +48,7 @@ post '/call/recorded' do
   Pony.mail(
     :to => ENV['EMAIL_RECIPIENT'],
     :subject => "Call from #{params[:From]}",
-    :body => "<p>A call was recorded at #{Time.now} from #{params[:From]}.</p><p>You can <a href=\"#{params[:RecordingUrl]}\">listen to a recording</a> of the call.</a></p>")
+    :html_body => "<p>A call was recorded at #{Time.now} from #{params[:From]}.</p><p>You can <a href=\"#{params[:RecordingUrl]}\">listen to a recording</a> of the call.</a></p>")
 
   content_type 'text/xml'
   builder do |xml|
@@ -64,7 +64,7 @@ post '/sms' do
   Pony.mail(
     :to => ENV['EMAIL_RECIPIENT'],
     :subject => "SMS message from #{params[:From]}",
-    :body => "<p>#{params[:Body]}</p><p>(This message was recorded at #{Time.now} from #{params[:From]}.</p><p>Reply to this message:</p><form action=\"http://peripatwilio.heroku.com/sms/send\" method=\"POST\"><input type=\"hidden\" name=\"to\" value=\"#{params[:From]}\"><input type=\"text\" name=\"text\"><input type=\"submit\" value=\"Reply\"></form>")
+    :html_body => "<p>#{params[:Body]}</p><p>(This message was recorded at #{Time.now} from #{params[:From]}.</p><p>Reply to this message:</p><form action=\"http://peripatwilio.heroku.com/sms/send\" method=\"POST\"><input type=\"hidden\" name=\"to\" value=\"#{params[:From]}\"><input type=\"text\" name=\"text\"><input type=\"submit\" value=\"Reply\"></form>")
 
   content_type 'text/xml'
   builder do |xml|
