@@ -1,0 +1,12 @@
+!!! 5
+%html
+  %head
+    %title Twilio Reply
+
+  %body
+    %h2 Reply to SMS
+    %form{:action => '/sms/send', :method => 'POST'}
+      %strong= @to
+      %input{:type => 'hidden', :name => 'to', :value => @to}
+      %input{:type => 'text', :name => 'text'}
+      %input{:type => 'submit', :value => 'Send reply'}
