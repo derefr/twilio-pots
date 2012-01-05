@@ -8,9 +8,9 @@
     %table
       - @calls.each do |call|
         %tr
-          %td= msg['from']
+          %td= call['from']
           %td
-            %a{:href => msg['url']} Listen
+            %a{:href => call['url']} Listen
 
     %h2 SMS log
     %table
