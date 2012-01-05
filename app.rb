@@ -73,7 +73,7 @@ post '/sms' do
   end
 end
 
-get '/sms/reply'
+get '/sms/reply' do
   @to = params[:to]
   haml :reply
 end
