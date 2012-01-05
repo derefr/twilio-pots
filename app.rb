@@ -64,13 +64,18 @@ post '/sms' do
   Pony.mail(
     :to => ENV['EMAIL_RECIPIENT'],
     :subject => "SMS message from #{params[:From]}",
-    :html_body => "<p>#{params[:Body]}</p><p>(This message was recorded at #{Time.now} from #{params[:From]}.</p><p>Reply to this message:</p><form action=\"http://peripatwilio.heroku.com/sms/send\" method=\"POST\"><input type=\"hidden\" name=\"to\" value=\"#{params[:From]}\"><input type=\"text\" name=\"text\"><input type=\"submit\" value=\"Reply\"></form>")
+    :html_body => "<p>#{params[:Body]}</p><p>(<a href=\"http://peripatwilio.heroku.com/sms/reply?to=#{URL.encode(params[:From])}\">Reply to this message</a>)</p>")
 
   content_type 'text/xml'
   builder do |xml|
     xml.instruct!
     xml.Response
   end
+end
+
+get '/sms/reply'
+  @to = params[:to]
+  haml :reply
 end
 
 get '/' do
