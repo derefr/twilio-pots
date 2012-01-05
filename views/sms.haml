@@ -11,7 +11,7 @@
           %td= msg['with']
           %td= msg['text']
 
-    %form{:action => '/send', :method => 'POST'}
+    %form{:action => '/sms/send', :method => 'POST'}
       %select{:name => 'from'}
         - @senders.each do |sender|
           %option= sender
