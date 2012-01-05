@@ -5,6 +5,7 @@ require 'haml'
 require 'twilio-ruby'
 require 'rest-client'
 require 'json'
+require 'pony'
 
 configure do
   redis_uri = URI.parse(ENV["REDISTOGO_URL"] || 'redis://localhost:6379/')
