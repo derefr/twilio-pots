@@ -15,19 +15,45 @@ before do
   @client = Twilio::REST::Client.new ENV['TWILIO_ID'], ENV['TWILIO_SECRET']
 end
 
+post '/call' do
+  content_type 'text/xml'
+  builder do |xml|
+    xml.instruct!
+    xml.Response do
+      xml.Say("Record a message.")
+      xml.Record(:maxLength => 3600, :action => "http://peripatwilio.heroku.com/call/recorded")
+    end
+  end
+end
+
+post '/call/recorded' do
+  REDIS.zadd('calls', Time.now.to_i, {'from' => params[:From], 'url' => params[:RecordingUrl]}.to_json)
+
+  content_type 'text/xml'
+  builder do |xml|
+    xml.instruct!
+    xml.Response
+    end
+  end
+end
+
 post '/sms' do
   REDIS.zadd('sms', Time.now.to_i, {'outgoing' => false, 'with' => params[:From], 'text' => params[:Body]}.to_json)
   REDIS.zadd('sms:senders', Time.now.to_i, params[:From])
 
   content_type 'text/xml'
-  '<?xml version="1.0" encoding="UTF-8" ?><Response></Response>'
+  builder do |xml|
+    xml.instruct!
+    xml.Response
+  end
 end
 
-get '/sms' do
+get '/' do
   @msgs = REDIS.zrange('sms', 0, -1).map{ |s| JSON.parse(s) }
+  @calls = REDIS.zrange('calls', 0, -1).map{ |s| JSON.parse(s) }
   @senders = REDIS.zrevrange('sms:senders', 0, -1)
 
-  haml :sms
+  haml :home
 end
 
 post '/sms/send' do
@@ -35,7 +61,7 @@ post '/sms/send' do
 
   @client.account.sms.messages.create({:from => '+16042103583', :to => params[:to], :body => params[:text]})
   
-  redirect '/sms'
+  redirect '/'
 end
 
 get '/responder' do

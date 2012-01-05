@@ -1,9 +1,18 @@
 !!! 5
 %html
   %head
-    %title SMS Console
+    %title Twilio Gateway Console
+
   %body
-    %h2 Message log
+    %h2 Call log
+    %table
+      - @calls.each do |call|
+        %tr
+          %td= msg['from']
+          %td
+            %a{:href => msg['url']} Listen
+
+    %h2 SMS log
     %table
       - @msgs.each do |msg|
         %tr
@@ -11,6 +20,7 @@
           %td= msg['with']
           %td= msg['text']
 
+    %h2 Send SMS
     %form{:action => '/sms/send', :method => 'POST'}
       %select{:name => 'to'}
         - @senders.each do |sender|
