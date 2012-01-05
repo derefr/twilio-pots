@@ -12,7 +12,7 @@
           %td= msg['text']
 
     %form{:action => '/sms/send', :method => 'POST'}
-      %select{:name => 'from'}
+      %select{:name => 'to'}
         - @senders.each do |sender|
           %option= sender
       %input{:type => 'text', :name => 'text'}
