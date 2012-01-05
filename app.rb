@@ -22,8 +22,9 @@ post '/sms' do
 end
 
 get '/sms' do
+  msgs = REDIS.zrange('sms', 0, -1)
   content_type 'text/plain'
-  REDIS.zrange('sms', 0, -1).map{ |json_str| j = JSON.parse(json_str); "#{j['from']}: #{j['text']}" }.join("\n")
+  "#{msgs.length} messages\n\n" + msgs.map{ |json_str| j = JSON.parse(json_str); "#{j['from']}: #{j['text']}" }.join("\n")
 end
 
 get '/responder' do
