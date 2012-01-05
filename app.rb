@@ -9,6 +9,21 @@ require 'json'
 configure do
   redis_uri = URI.parse(ENV["REDISTOGO_URL"] || 'redis://localhost:6379/')
   REDIS = Redis.new(:host => redis_uri.host, :port => redis_uri.port, :password => redis_uri.password)
+
+  Pony.options = {
+    :from => 'PeripaTwilio Gateway <the@peripatwilio.heroku.com>',
+    :via => :smtp,
+    :via_options => {
+      :address => 'smtp.sendgrid.net',
+      :port => '25',
+      :authentication => :plain,
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD'],
+      :domain => ENV['SENDGRID_DOMAIN']
+    }
+  }
+  
+
 end
 
 before do
@@ -29,6 +44,11 @@ end
 post '/call/recorded' do
   REDIS.zadd('calls', Time.now.to_i, {'from' => params[:From], 'url' => params[:RecordingUrl]}.to_json)
 
+  Pony.mail(
+    :to => ENV['EMAIL_RECIPIENT'],
+    :subject => "Call from #{params[:From]}",
+    :body => "<p>A call was recorded at #{Time.now} from #{params[:From]}.</p><p>You can <a href=\"#{params[:RecordingUrl]}\">listen to a recording</a> of the call.</a></p>")
+
   content_type 'text/xml'
   builder do |xml|
     xml.instruct!
@@ -39,6 +59,11 @@ end
 post '/sms' do
   REDIS.zadd('sms', Time.now.to_i, {'outgoing' => false, 'with' => params[:From], 'text' => params[:Body]}.to_json)
   REDIS.zadd('sms:senders', Time.now.to_i, params[:From])
+
+  Pony.mail(
+    :to => ENV['EMAIL_RECIPIENT'],
+    :subject => "SMS message from #{params[:From]}",
+    :body => "<p>#{params[:Body]}</p><p>(This message was recorded at #{Time.now} from #{params[:From]}.</p><p>Reply to this message:</p><form action=\"http://peripatwilio.heroku.com/sms/send\" method=\"POST\"><input type=\"hidden\" name=\"to\" value=\"#{params[:From]}\"><input type=\"text\" name=\"text\"><input type=\"submit\" value=\"Reply\"></form>")
 
   content_type 'text/xml'
   builder do |xml|
