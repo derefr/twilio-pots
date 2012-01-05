@@ -26,7 +26,6 @@ end
 get '/sms' do
   @msgs = REDIS.zrange('sms', 0, -1).map{ |s| JSON.parse(s) }
   @senders = REDIS.zrevrange('sms:senders', 0, -1)
-  content_type 'text/plain'
 
   haml :sms
 end
