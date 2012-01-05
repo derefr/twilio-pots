@@ -3,6 +3,7 @@ require 'sinatra'
 require 'builder'
 require 'twilio-ruby'
 require 'rest-client'
+require 'json'
 
 configure do
   redis_uri = URI.parse(ENV["REDISTOGO_URL"] || 'redis://localhost:6379/')
@@ -11,6 +12,18 @@ end
 
 before do
   @client = Twilio::REST::Client.new ENV['TWILIO_ID'], ENV['TWILIO_SECRET']
+end
+
+post '/sms' do
+  REDIS.zadd('sms', Time.now.to_i, {'from' => params[:From], 'text' => params[:Body]}.to_json)
+
+  content_type 'text/xml'
+  '<?xml version="1.0" encoding="UTF-8" ?><Response></Response>'
+end
+
+get '/sms' do
+  content_type 'text/plain'
+  REDIS.zrange('sms', 0, -1).map{ |json_str| j = JSON.parse(json_str); "#{j['from']}: #{j['text']}" }.join("\n")
 end
 
 get '/responder' do
