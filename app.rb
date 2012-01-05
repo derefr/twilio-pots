@@ -6,6 +6,7 @@ require 'twilio-ruby'
 require 'rest-client'
 require 'json'
 require 'pony'
+require 'uri'
 
 configure do
   redis_uri = URI.parse(ENV["REDISTOGO_URL"] || 'redis://localhost:6379/')
@@ -64,7 +65,7 @@ post '/sms' do
   Pony.mail(
     :to => ENV['EMAIL_RECIPIENT'],
     :subject => "SMS message from #{params[:From]}",
-    :html_body => "<p>#{params[:Body]}</p><p>(<a href=\"http://peripatwilio.heroku.com/sms/reply?to=#{URL.encode(params[:From])}\">Reply to this message</a>)</p>")
+    :html_body => "<p>#{params[:Body]}</p><p>(<a href=\"http://peripatwilio.heroku.com/sms/reply?to=#{URI.encode(params[:From])}\">Reply to this message</a>)</p>")
 
   content_type 'text/xml'
   builder do |xml|
