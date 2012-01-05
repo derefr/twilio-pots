@@ -33,7 +33,6 @@ post '/call/recorded' do
   builder do |xml|
     xml.instruct!
     xml.Response
-    end
   end
 end
 
