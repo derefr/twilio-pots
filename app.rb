@@ -1,6 +1,7 @@
 require 'redis'
 require 'sinatra'
 require 'builder'
+require 'haml'
 require 'twilio-ruby'
 require 'rest-client'
 require 'json'
@@ -15,16 +16,27 @@ before do
 end
 
 post '/sms' do
-  REDIS.zadd('sms', Time.now.to_i, {'from' => params[:From], 'text' => params[:Body]}.to_json)
+  REDIS.zadd('sms', Time.now.to_i, {'outgoing' => false, 'with' => params[:From], 'text' => params[:Body]}.to_json)
+  REDIS.zadd('sms:senders', Time.now.to_i, params[:From])
 
   content_type 'text/xml'
   '<?xml version="1.0" encoding="UTF-8" ?><Response></Response>'
 end
 
 get '/sms' do
-  msgs = REDIS.zrange('sms', 0, -1)
+  @msgs = REDIS.zrange('sms', 0, -1).map{ |s| JSON.parse(s) }
+  @senders = REDIS.zrevrange('sms:senders', 0, -1)
   content_type 'text/plain'
-  "#{msgs.length} messages\n\n" + msgs.map{ |json_str| j = JSON.parse(json_str); "#{j['from']}: #{j['text']}" }.join("\n")
+
+  haml :sms
+end
+
+post '/sms/send' do
+  REDIS.zadd('sms', Time.now.to_i, {'outgoing' => true, 'with' => params[:to], 'text' => params[:text]}.to_json)
+
+  @client.account.sms.messages.create({:from => '+16042103583', :to => params[:to], :body => params[:text]})
+  
+  redirect '/sms'
 end
 
 get '/responder' do

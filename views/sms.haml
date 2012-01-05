@@ -1,0 +1,19 @@
+!!! 5
+%html
+  %head
+    %title SMS Console
+  %body
+    %h2 Message log
+    %table
+      - @msgs.each do |msg|
+        %tr
+          %td= msg['outgoing'] ? '&larr;' : '&rarr;'
+          %td= msg['with']
+          %td= msg['text']
+
+    %form{:action => '/send', :method => 'POST'}
+      %select{:name => 'from'}
+        - @senders.each do |sender|
+          %option= sender
+      %input{:type => 'text', :name => 'text'}
+      %input{:type => 'submit', :value => 'Send'}
