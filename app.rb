@@ -90,14 +90,13 @@ end
 post '/sms/send' do
   REDIS.zadd('sms', Time.now.to_i, {'outgoing' => true, 'with' => params[:to], 'text' => params[:text]}.to_json)
 
-  @client.account.sms.messages.create({:from => '+16042103583', :to => params[:to], :body => params[:text]})
+  @client.account.sms.messages.create({:from => ENV['DID_NUMBER'], :to => params[:to], :body => params[:text]})
   
   redirect '/'
 end
 
 get '/responder' do
   @code = REDIS.blpop('code', 0).last
-
   RestClient.get("http://www.dialabc.com/sound/generate/index.html?pnum=#{@code}&auFormat=wavpcm8&toneLength=300&mtcontinue=Generate+DTMF+Tones")
 
   builder do |xml|
