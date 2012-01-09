@@ -1,8 +1,8 @@
 # About
 
-twilio-did is a simple web service to enable the use of a [Twilio](https://www.twilio.com/) number as a regular phone number. People will be able to call the supplied number (set in the environment variable `DID_NUMBER`) and leave voicemails, or send SMS messages. Both will show up on the web service's log view. You will also receive an email message (on the address supplied in the environment variable `EMAIL_RECIPIENT`) for each voicemail or SMS received. You will be able to reply to SMS messages through the web service.
+twilio-pots is a simple web service to enable the use of a [Twilio](https://www.twilio.com/) number as a regular phone number. People will be able to call the supplied number (set in the environment variable `DID_NUMBER`) and leave voicemails, or send SMS messages. Both will show up on the web service's log view. You will also receive an email message (on the address supplied in the environment variable `EMAIL_RECIPIENT`) for each voicemail or SMS received. You will be able to reply to SMS messages through the web service.
 
-twilio-did is designed to run on [Heroku](http://www.heroku.com/). It employs Heroku's redistogo and sendgrid addons for, respectively, the storage of received messages, and the sending of emails. All of these have free tiers on Heroku's service plan. Combining this with the free $30 of Twilio credit you receive for signing up with them ($28 after purchasing a DID number), you can leverage twilio-did to have a phone number with *no cost whatsoever.*
+twilio-pots is designed to run on [Heroku](http://www.heroku.com/). It employs Heroku's redistogo and sendgrid addons for, respectively, the storage of received messages, and the sending of emails. All of these have free tiers on Heroku's service plan. Combining this with the free $30 of Twilio credit you receive for signing up with them ($28 after purchasing a DID number), you can leverage twilio-pots to have a phone number with *no cost whatsoever.*
 
 # Installation and configuration
 
