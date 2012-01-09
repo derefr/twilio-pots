@@ -9,7 +9,7 @@ twilio-pots is designed to run on [Heroku](http://www.heroku.com/). It employs H
 1. Sign up for [Heroku](http://www.heroku.com/), and for [Twilio](https://www.twilio.com/).
 2. Purchase a Twilio phone number, local to whatever region you'll be using the phone number in, through their web interface. (This "purchase" uses your free credit, and is not a charge on your credit card.)
 3. `git clone` this repository, enter its directory, and `heroku create` it.
-4. On Twilio, create a TwiML app and configure it to point to http://*yourappname*.heroku.com/call and http://*yourappname.heroku.com/sms, respectively, where *yourappname* is the name Heroku gave your app. Associate this app with the phone number you purchased.
+4. On Twilio, create a TwiML app and configure it to point to http://*yourappname*.heroku.com/call and http://*yourappname*.heroku.com/sms, respectively, where *yourappname* is the name Heroku gave your app. Associate this app with the phone number you purchased.
 4. `heroku addons:add redistogo`
 5. `heroku addons:add sendgrid`
 6. `heroku config:add TWILIO_ID=`[your Twilio API key here]
